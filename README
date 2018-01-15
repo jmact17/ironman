@@ -1,0 +1,53 @@
+README Cartoon
+
+HANDIN: Final
+
+DESIGN CHOICES:
+I wrote my Cartoon with these classes: App, PaneOrganizer, Cartoon, IronMan, Cloud, and Constants.
+
+App contains the start method which sets up the stage. It contains PaneOrganizer.
+
+PaneOrganizer is the top-level class. It organizes the BorderPane layout of the program, which has one pane occupying
+the left and another in the center. It creates and designs the left pane, the informational pane that contains labels 
+and buttons. It contains an instance of the Cartoon class. QuitHandler makes the program exit when the Quit button is
+clicked, and ClickHandler changes the colors of the background and the clouds when the Night/Day button is clicked.
+
+Cartoon creates the _cartoonPane where all the action happens. It instantiates all the shapes that appear in the cartoon
+(one IronMan and four Clouds) and is responsible for all the user input and animation that occurs in the cartoon. Its 
+constructor takes two parameters: a BorderPane and a Label. When PaneOrganizer instantiates a Cartoon instance, it passes 
+in the root BorderPane so that the Cartoon instance can be added to the center. The dynamic label depends on information 
+from the Cartoon class but is contained in PaneOrganizer, so when PaneOrganizer instantiates a Cartoon instance, it passes 
+in the speed label. The Cartoon class contains all the EventHandlers controlling the cloud (CloudHandler) and beam (BeamHandler) 
+animations as well as the responses to arrow keys (KeyHandler), the space bar (SpacePressHandler and SpaceReleaseHandler), 
+and the Night/Day button (ClickHandler). The moveCloudTimeline() method instantiates a CloudHandler, which calls the moveDown() 
+method on each of the four Cloud instances, controlling the movement of the clouds down the screen. The beamTimeline() method
+instantiates a BeamHandler, which calls the flashBeams() method on the IronMan instance, animating the four beam triangles.
+The KeyHandler contains a switch statement that calls methods specifying responses to the four arrow keys: leftArrow() and 
+rightArrow() move Iron Man horizontally, and upArrow() and downArrow() change the speed of the clouds as well as the dynamic 
+speed label. SpacePressHandler instantiates Rectangle beams when the space bar is pressed, and SpaceReleaseHandler removes 
+these from the pane when the space bar is released. The nightSky() and nightCloud() methods are both called in the ClickHandler 
+in PaneOrganizer to change the colors of the background and the clouds. 
+
+IronMan is responsible for creating and animating Iron Man. Its constructor accepts a parameter of type Pane so that when 
+Cartoon instantiates it, _cartoonPane can be passed in and receive all the children created by IronMan. I split up the creation
+of all of Iron Man's body parts into multiple methods (createFace(), createBody(), createArms(), createLegs(), and createBeams()) 
+rather than doing it all in the constructor so that the constructor would not be cluttered. The IronMan class also has methods 
+to change Iron Man's location (moveXLoc()) and the size of his beams (flashBeams()). It also has setters and getters for X 
+locations that are used in the Cartoon class. getXLoc() is called in Cartoon's leftArrow() and rightArrow() methods to limit 
+how far Iron Man can move; getLeftEye() and getRightEye() are called in Cartoon's leftArrow() and rightArrow() methods and 
+SpacePressHandler to position the laser beams. setLeftLimit() and setRightLimit() prevent Iron Man from moving past the left and
+right borders.  
+
+Cloud is responsible for creating and animating clouds. Its constructor takes a parameter of type Pane so that when Cartoon 
+instantiates a Cloud, it can pass in _cartoonPane, and the Cloud instance can be added to the pane. Cloud contains methods that 
+make the clouds move and change their color. moveDown(int distance) takes in Cartoon's instance variable _distance as a parameter
+so that Cartoon's CloudHandler can animate the Clouds. grayCloud() is called in Cartoon's nightCloud() method (which is called 
+in PaneOrganizer's ClickHandler) to switch the color of the clouds between gray and white when the Night/Day button is clicked.
+
+
+KNOWN BUGS:
+When a left or right arrow is held down and then space is pressed while still holding down the arrow, Iron Man stops moving.
+It only continues (while the space bar is still being held down) if the opposite arrow is pressed.
+However, when the space bar is held down first, Iron Man moves left and right with no problem.
+I have tried switching the order of creating the KeyHandler and SpacePressHandler in Cartoon's constructor and have looked carefully
+through all the methods but can't find any reason why pressing the space bar while an arrow key is being held would stop movement.
